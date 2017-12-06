@@ -680,7 +680,7 @@ Change widths as necessary
 /* LANDSCAPE TABLET/NETBOOK/LAPTOP */
 @media only screen and (min-width: 1024px) { 
   body {
-
+    
   }
   .etabs >li span{
     display: inline;
@@ -704,14 +704,16 @@ Change widths as necessary
 @media only screen and (min-width: 1280px) { 
   /* DESKTOP */
   body {
-
+    
   }
 }
 
 /* WIDESCREEN */
 /* Increased body size for legibility */
 @media only screen and (min-width: 1400px) { 
-  body {} /* 18.5px / 28px */
+  body {
+    
+  } /* 18.5px / 28px */
 }
 
 
