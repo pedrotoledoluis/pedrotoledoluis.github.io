@@ -195,7 +195,7 @@ body {width: 92%; margin: 0 auto} /* Center page without wrapper */
   padding: 30px 20px;
   background: #fff;
   border: 1px solid #f1f1f1;
-  box-shadow: 0px 6px #3346b3;
+  box-shadow: 0px 6px #27368a;
   border-radius: 0px 0px 4px 4px;
 }
 
@@ -237,7 +237,7 @@ body {width: 92%; margin: 0 auto} /* Center page without wrapper */
 
 .tab a.active {
   padding-top: 10px;
-  color: #3346b3;
+  color: #27368a;
 }
 .tab a i{
   font-size: 16px;
@@ -418,7 +418,7 @@ body {width: 92%; margin: 0 auto} /* Center page without wrapper */
   display:inline-block;
   margin: 0 10px 10px 0;    
   padding: 14px 20px;  
-  background: #E74C3C;
+  background: rgb(25, 23, 151);
   color: #fff;
   font-weight: bold;
   font-size: 13px;
