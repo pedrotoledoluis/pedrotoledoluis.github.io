@@ -14,10 +14,12 @@
   <link rel="apple-touch-icon-precomposed" href="apple-touch-icon-72x72-precomposed.png">
   <link rel="apple-touch-icon-precomposed" href="apple-touch-icon-114x114-precomposed.png">
   <link rel="apple-touch-icon-precomposed" href="apple-touch-icon-144x144-precomposed.png">
+  
   <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
 
   <link rel="stylesheet" href="css/normalize.min.css">
   <link rel="stylesheet" href="css/main.css">
+
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
   <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.1.min.js"><\/script>')</script>
   <script src="js/vendor/jquery.hashchange.min.js"></script>
@@ -37,7 +39,7 @@
     <![endif]-->
 
 
-<div id="container">
+<div id="container" style=" z-index:999; ">
 
 <div id="overlay" class="main-container">
     
@@ -367,8 +369,8 @@
                               <i class="icon-phone"></i>
                             </div>
                             <div class="sny-icon-content">
-                              <h4>Mobile Number</h4>
-                              <p>999-9999-999<br/>999-1112-999</p>
+                              <h4>Numero Movil</h4>
+                              <p>+51 943 885 146</p>
                             </div>
                          </div>
                        </div>
@@ -395,7 +397,19 @@
     </div><!-- #main -->
 </div><!-- #main-container -->
 </div>
-<script src="js/canvas2.js"></script> 
-<script src="js/canvas.js"></script>
+
+<div id="myspecialdiv" style="position:absolute; top:0; zoom: 150%;">
+    <iframe width="100vw" height="100vh" frameborder="0" src="css/iron.html"></iframe>
+</div>
+<!-- otra forma de poner stylos solo al div parent
+<div>
+    <style scoped>
+        // Styles here
+    </style>
+</div>
+
+-->
+
+
 </body>
 </html>
