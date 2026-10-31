@@ -5,10 +5,81 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Historia en Cubitos</title>
 <style>
-  body { margin: 0; font-family: system-ui, sans-serif; background: #141a33; color: #f4efe6; }
+  :root {
+    color-scheme: dark light;
+    --bg: #141a33; --ink: #f4efe6; --ink-2: #c9c4bb; --muted: #9a97a8; --accent: #ffd23f; --link: #5fd3c4;
+    --card: #1c2444; --line: #2c3660; --row: #182040; --series: #26a596; --series-fill: rgba(38, 165, 150, .18);
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --bg: #f7f4ee; --ink: #1d2440; --ink-2: #3d4466; --muted: #5f6480; --accent: #8a5a00; --link: #00796b;
+      --card: #ffffff; --line: #ddd8cc; --row: #f1ede4; --series: #00897b; --series-fill: rgba(0, 137, 123, .14);
+    }
+  }
+  :root[data-theme="light"] {
+    --bg: #f7f4ee; --ink: #1d2440; --ink-2: #3d4466; --muted: #5f6480; --accent: #8a5a00; --link: #00796b;
+    --card: #ffffff; --line: #ddd8cc; --row: #f1ede4; --series: #00897b; --series-fill: rgba(0, 137, 123, .14);
+  }
+  body { margin: 0; font-family: system-ui, sans-serif; background: var(--bg); color: var(--ink); }
   main { max-width: 640px; margin: 0 auto; padding: 48px 16px; }
-  h1 { color: #ffd23f; }
-  a { color: #5fd3c4; }
+  h1 { color: var(--accent); }
+  a { color: var(--link); }
+
+  /* Channel stats */
+  .stats { margin-top: 56px; border-top: 1px solid var(--line); padding-top: 32px; }
+  .stats [hidden] { display: none !important; }
+  .stats h2 { margin: 0 0 4px; }
+  .stats h3 { font-size: 1rem; margin: 0; }
+  .stats-updated { margin: 0 0 20px; color: var(--muted); font-size: .9rem; }
+  .stats-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 0 0 24px; padding: 0; list-style: none; }
+  .stats-card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; min-width: 0; }
+  .stats-card .label { display: block; color: var(--ink-2); font-size: .8rem; }
+  .stats-card .value { display: block; font-size: 1.6rem; font-weight: 700; font-variant-numeric: tabular-nums; margin-top: 4px; overflow-wrap: anywhere; }
+  .stats-card .sub { display: block; color: var(--muted); font-size: .8rem; margin-top: 2px; overflow-wrap: anywhere; }
+  .stats-card.wide { grid-column: 1 / -1; }
+  .stats-card.wide .value { font-size: 1.05rem; }
+  .stats-block { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px; margin: 0 0 24px; }
+  .stats-block-head { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .stats-toggle { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; }
+  .stats-toggle button { font: inherit; font-size: .8rem; background: none; color: var(--ink-2); border: 0; padding: 6px 12px; cursor: pointer; }
+  .stats-toggle button[aria-pressed="true"] { background: var(--series); color: #fff; }
+  .stats-chart { position: relative; }
+  .stats-chart svg { display: block; width: 100%; height: auto; touch-action: pan-y; }
+  .stats-chart svg:focus-visible { outline: 2px solid var(--link); outline-offset: 2px; border-radius: 4px; }
+  .stats-chart .grid { stroke: var(--line); stroke-width: 1; }
+  .stats-chart .axis { fill: var(--muted); font-size: 11px; font-variant-numeric: tabular-nums; }
+  .stats-chart .area { fill: var(--series-fill); }
+  .stats-chart .line { fill: none; stroke: var(--series); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+  .stats-chart .cross { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 3 3; }
+  .stats-chart .dot { fill: var(--series); stroke: var(--card); stroke-width: 2; }
+  .stats-tip { position: absolute; top: 0; pointer-events: none; background: var(--bg); color: var(--ink); border: 1px solid var(--line);
+    border-radius: 8px; padding: 6px 10px; font-size: .8rem; white-space: nowrap; box-shadow: 0 4px 14px rgba(0, 0, 0, .25); }
+  .stats-tip strong { font-variant-numeric: tabular-nums; }
+  .stats-queue { margin: 0; padding: 0; list-style: none; }
+  .stats-queue li { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2px 12px; padding: 8px 0; border-top: 1px solid var(--line); }
+  .stats-queue li:first-child { border-top: 0; }
+  .stats-queue .when { color: var(--ink-2); font-size: .85rem; font-variant-numeric: tabular-nums; }
+  .stats-queue .state { color: var(--muted); font-size: .8rem; width: 100%; }
+  .stats-table { width: 100%; border-collapse: collapse; font-size: .9rem; table-layout: fixed; }
+  .stats-table caption { text-align: left; font-weight: 700; margin-bottom: 8px; }
+  .stats-table th, .stats-table td { padding: 8px 6px; border-top: 1px solid var(--line); text-align: right; vertical-align: top; }
+  .stats-table th:first-child, .stats-table td:first-child { text-align: left; width: 46%; overflow-wrap: anywhere; }
+  .stats-table td { font-variant-numeric: tabular-nums; }
+  .stats-table tbody tr:nth-child(odd) { background: var(--row); }
+  .stats-table th { border-top: 0; font-weight: 600; color: var(--ink-2); font-size: .82rem; white-space: nowrap; }
+  .stats-table th button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; text-align: inherit; }
+  .stats-table th button::after { content: " \2195"; color: var(--muted); }
+  .stats-table th[aria-sort="ascending"] button::after { content: " \2191"; color: var(--ink); }
+  .stats-table th[aria-sort="descending"] button::after { content: " \2193"; color: var(--ink); }
+  .stats-table th button:focus-visible { outline: 2px solid var(--link); outline-offset: 2px; }
+  .stats-table .date { display: block; color: var(--muted); font-size: .78rem; margin-top: 2px; }
+  .stats-empty { background: var(--card); border: 1px dashed var(--line); border-radius: 12px; padding: 20px; color: var(--ink-2); }
+  @media (max-width: 520px) {
+    .stats-table .opt { display: none; }
+    .stats-table th:first-child, .stats-table td:first-child { width: 58%; }
+    .stats-card .value { font-size: 1.35rem; }
+  }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 </style>
 </head>
 <body>
@@ -19,6 +90,42 @@
   <h2>Historia en Cubitos Uploader</h2>
   <p>Herramienta privada que usa la API de YouTube (YouTube Data API v3) para subir los videos del canal, con su título, descripción y miniatura. Solo la usa el dueño del canal y solo accede a ese canal.</p>
   <p><a href="privacy.html">Política de privacidad</a></p>
+  <section class="stats" id="estadisticas" aria-labelledby="stats-title">
+    <h2 id="stats-title">Estadísticas del canal</h2>
+    <p class="stats-updated" id="stats-updated" aria-live="polite">Cargando estadísticas…</p>
+    <div id="stats-body" hidden>
+      <ul class="stats-cards" id="stats-cards" aria-label="Totales del canal"></ul>
+      <div class="stats-block">
+        <div class="stats-block-head">
+          <h3 id="stats-chart-title">Vistas por hora (últimas 24 h)</h3>
+          <div class="stats-toggle" id="stats-toggle" role="group" aria-label="Periodo del gráfico" hidden>
+            <button type="button" data-range="24h" aria-pressed="true">24 h</button>
+            <button type="button" data-range="days" aria-pressed="false">Por día</button>
+          </div>
+        </div>
+        <div class="stats-chart" id="stats-chart"></div>
+      </div>
+      <div class="stats-block" id="stats-queue-block" hidden>
+        <div class="stats-block-head"><h3>Próximos estrenos</h3></div>
+        <ul class="stats-queue" id="stats-queue" aria-label="Próximos estrenos en hora de Perú"></ul>
+      </div>
+      <table class="stats-table" id="stats-table">
+        <caption>Videos publicados (toca un encabezado para ordenar)</caption>
+        <thead>
+          <tr>
+            <th scope="col" data-key="title"><button type="button">Video</button></th>
+            <th scope="col" data-key="views" aria-sort="descending"><button type="button">Vistas</button></th>
+            <th scope="col" data-key="views24h"><button type="button"><span aria-hidden="true">24 h</span><span class="sr-only">Vistas en 24 horas</span></button></th>
+            <th scope="col" data-key="likes" class="opt"><button type="button">Me gusta</button></th>
+            <th scope="col" data-key="comments" class="opt"><button type="button"><span aria-hidden="true">Coment.</span><span class="sr-only">Comentarios</span></button></th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <p class="stats-empty" id="stats-empty" hidden>Las estadísticas todavía no están disponibles. Vuelve a intentarlo más tarde.</p>
+  </section>
 </main>
+<script src="assets/channel-stats.js" defer></script>
 </body>
 </html>
